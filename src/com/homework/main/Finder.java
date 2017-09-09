@@ -9,6 +9,12 @@ import java.util.*;
 public class Finder{
 	private String fileName;
 	private String pattern;
+
+	/*
+	Next var for this requirement:
+	The search pattern may include wildcard characters `'*'` which match missing letters
+	(`'B*rBaz'` finds `FooBarBaz`i but `BrBaz` does not).
+	 */
 	private final char spetialSimbol = '#';
 
 	public Finder(String fileName, String pattern){
@@ -23,7 +29,7 @@ public class Finder{
 		this.pattern = pattern;
 	}
 
-	public Map<String, ArrayList<String>> readFileAndGetClasses() throws IOException{
+	public Map<String, ArrayList<String>> readFileAndCollectClasses() throws IOException{
 		String line, packadge, clas;
 		Map<String, ArrayList<String>> classes = new TreeMap<>();
 		FileReader fileReader = new FileReader(fileName) ;
@@ -35,7 +41,7 @@ public class Finder{
 					int lastIndexOfDot = line.lastIndexOf(".");
 					clas = line.substring(lastIndexOfDot + 1);
 					packadge = line.substring(0, lastIndexOfDot + 1);
-					ArrayList<String> packageArray;
+					ArrayList<String> packageArray; //for identical class names in different packadges
 					if(classes.containsKey(clas)){
 						packageArray = classes.get(clas);
 						packageArray.add(packadge);
@@ -58,7 +64,7 @@ public class Finder{
 	}
 
 	public Map<String, ArrayList<String>> filter() throws IOException{
-		Map<String, ArrayList<String>> map = readFileAndGetClasses();
+		Map<String, ArrayList<String>> map = readFileAndCollectClasses();
 		Map<String, ArrayList<String>> filteredMap = new TreeMap<>();
 		boolean flag = false;
 
@@ -102,8 +108,8 @@ public class Finder{
 	}
 
 	public boolean match(String className) {
-		int wildCardStarPos = -1; // Last star position in wildcard
-		int textPos = -1; // Position in text
+		int wildCardStarPos = -1; // Last position of '*' in wildCard
+		int textPos = -1; // Position at className
 		String wildCard = toWildCard();
 
 		int j = 0;
@@ -132,7 +138,7 @@ public class Finder{
 				return false;
 			}
 		}
-		// Skip all stars
+		// skiping all stars
 		while(j < wildCard.length() && wildCard.charAt(j) == '*') {
 			j++;
 		}
