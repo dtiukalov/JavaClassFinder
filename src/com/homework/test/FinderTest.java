@@ -164,7 +164,7 @@ public class FinderTest extends Assert{
 	}
 
 	@Test
-	public void testSplitFullClassName() throws IOException{
+	public void testSplitPackadgeClassName() throws IOException{
 		Finder finder = new Finder(fileName,"WishMaker");
 		Map<String, ArrayList<String>> map = finder.filter();
 		Iterator it = map.entrySet().iterator();
